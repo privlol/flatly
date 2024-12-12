@@ -321,9 +321,9 @@ func main() {
 
 	if len(args) == 0 {
 		fmt.Println("Usage:")
-		fmt.Println("  flatpak_manager add <package_name>    # Add a package")
-		fmt.Println("  flatpak_manager remove <package_name> # Remove a package")
-		fmt.Println("  flatpak_manager daemon                # Run as daemon")
+		fmt.Println("  flatly add <package_name>    # Add a package")
+		fmt.Println("  flatly remove <package_name> # Remove a package")
+		fmt.Println("  flatly daemon                # Run as daemon")
 		return
 	}
 
