@@ -1,0 +1,16 @@
+[Unit]
+Description=Flatly Daemon
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+ExecStart=/usr/local/bin/flatly daemon
+Restart=on-failure
+RestartSec=3
+User=flatly
+Environment=PATH=$HOME/.local/bin:/usr/bin:/bin
+Environment=FLATLY_CONFIG_DIR=$HOME/.config/flatly
+WorkingDirectory=$HOME
+
+[Install]
+WantedBy=default.target
