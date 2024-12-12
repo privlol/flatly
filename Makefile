@@ -6,7 +6,15 @@ VERSION=$(shell git describe --tags --always --dirty)
 # Check if the flatly user exists, if not, create it
 USER=flatly
 
-all: build
+# Check for required files and directories
+check:
+	@echo "Checking for required files..."
+	@if [ ! -f "./main.go" ]; then echo "Error: main.go is missing!"; exit 1; fi
+	@if [ ! -f "./flatly.service" ]; then echo "Error: flatly.service is missing!"; exit 1; fi
+	@if [ ! -d "./bin" ]; then echo "Error: bin directory is missing!"; exit 1; fi
+	@echo "All required files found!"
+
+all: check build
 
 # Create the flatly user if it doesn't exist
 create-user:

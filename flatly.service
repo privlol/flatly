@@ -8,9 +8,9 @@ ExecStart=/usr/local/bin/flatly daemon
 Restart=on-failure
 RestartSec=3
 User=flatly
-Environment=PATH=$HOME/.local/bin:/usr/bin:/bin
-Environment=FLATLY_CONFIG_DIR=$HOME/.config/flatly
-WorkingDirectory=$HOME
+Environment=PATH=%h/.local/bin:/usr/bin:/bin
+Environment=FLATLY_CONFIG_DIR=%h/.config/flatly
+WorkingDirectory=%h
 
 [Install]
 WantedBy=default.target
