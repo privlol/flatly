@@ -2,52 +2,39 @@ GOBIN=./bin
 GO=go
 APP_NAME=flatly
 VERSION=$(shell git describe --tags --always --dirty)
-INSTALL_DIR=/usr/local/bin
-SERVICE_FILE=service/flatly.service
-SERVICE_DIR=/etc/systemd/system
-USER_SERVICE_DIR=~/.config/systemd/user
-SRC_DIR=./cmd/flatly
-CONFIG_DIR=~/Documents/Projects/flatly/config
+
+# Check if the flatly user exists, if not, create it
+USER=flatly
 
 all: build
 
-build:
-	# Build the binary from the main.go file located in cmd/flatly/
-	mkdir -p $(GOBIN)
-	$(GO) build -o $(GOBIN)/$(APP_NAME) $(SRC_DIR)
+# Create the flatly user if it doesn't exist
+create-user:
+	@id -u $(USER) &>/dev/null || sudo useradd -r -m $(USER)
 
-run:
-	$(GOBIN)/$(APP_NAME)
+# Build the application
+build: create-user
+	$(GO) build -o $(GOBIN)/$(APP_NAME) ./main.go
 
-test:
-	$(GO) test ./...
+# Install the application system-wide
+install: build
+	@echo "Installing flatly to /usr/local/bin"
+	sudo install -m 755 ./bin/flatly /usr/local/bin/flatly
 
+	@echo "Installing systemd service"
+	sudo cp flatly.service /etc/systemd/user/
+	systemctl --user daemon-reload
+
+# Clean the build
 clean:
 	rm -rf $(GOBIN)
 
-install: build
-	# Install the binary to /usr/local/bin for system-wide usage
-	sudo cp $(GOBIN)/$(APP_NAME) $(INSTALL_DIR)/$(APP_NAME)
-	sudo chmod +x $(INSTALL_DIR)/$(APP_NAME)
+# Run the application
+run:
+	$(GOBIN)/$(APP_NAME)
 
-	# (Optional) Install configuration files, if needed
-	# sudo cp $(CONFIG_DIR)/config.yaml /etc/flatly/config.yaml
-
-	# Install the systemd service file
-	sudo cp $(SERVICE_FILE) $(SERVICE_DIR)/$(APP_NAME).service
-	sudo systemctl daemon-reload
-	sudo systemctl enable $(APP_NAME).service
-	sudo systemctl start $(APP_NAME).service
-
-	# Alternatively, install the service file for user-specific services
-	# mkdir -p $(USER_SERVICE_DIR)
-	# cp $(SERVICE_FILE) $(USER_SERVICE_DIR)/$(APP_NAME).service
-	# systemctl --user daemon-reload
-	# systemctl --user enable $(APP_NAME).service
-	# systemctl --user start $(APP_NAME).service
-
+# Release the application
 release: build
-	# Prepare release package
 	mkdir -p release
 	cp $(GOBIN)/$(APP_NAME) release/
 	tar -czvf release/$(APP_NAME)-$(VERSION).tar.gz -C release $(APP_NAME)
