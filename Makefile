@@ -10,8 +10,6 @@ USER=flatly
 check:
 	@echo "Checking for required files..."
 	@if [ ! -f "./main.go" ]; then echo "Error: main.go is missing!"; exit 1; fi
-	@if [ ! -f "./flatly.service" ]; then echo "Error: flatly.service is missing!"; exit 1; fi
-	@if [ ! -d "./bin" ]; then echo "Error: bin directory is missing!"; exit 1; fi
 	@echo "All required files found!"
 
 all: check build
