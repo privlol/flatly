@@ -45,5 +45,5 @@ release: build
 	cp $(GOBIN)/$(APP_NAME) release/
 	tar -czvf release/$(APP_NAME)-$(VERSION).tar.gz -C release $(APP_NAME)
 
-distcheck: clean check build install
-	@echo "Distcheck: Clean environment, build and install process completed successfully."
+distcheck: clean check build
+	@echo "Distcheck: Clean environment, build process completed successfully."
